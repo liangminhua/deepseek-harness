@@ -302,7 +302,7 @@ The Client terminal model derives existing `TerminalBlock` props from the tool n
 | Input | Preserved result |
 |---|---|
 | running standard `bash`/`pwsh` foreground call | terminal prompt, description, cwd, and running state |
-| successful standard foreground call | terminal output, exit code/signal, and settled state presentation |
+| successful standard foreground call | terminal output, exit code/signal, settled state presentation, and a Copy control writing the authored command |
 | explicit background standard `bash`/`pwsh` | original `background` flag with call `running` at Start; acknowledgement clears `running` and retains a static command without output or job status |
 | tool execution error | Generic IN/OUT and error summary |
 | running persistent `bash`/`pwsh` | terminal prompt |
@@ -319,7 +319,7 @@ For `terminal_send`, non-empty input and the session id remain verbatim tool dat
 
 Standard and persistent providers sharing the same tool name are a special compatibility point. The Client uses currently valid argument and result features to preserve their delivered differences. Input that cannot be identified unambiguously uses a Generic settled result rather than gaining new presentation.
 
-Outside the explicit background command-only presentation, `TerminalBlock` ANSI handling, cursor replay, wide characters, line limits, expansion, copying, and assistive text remain unchanged.
+Outside the explicit background command-only presentation, `TerminalBlock` ANSI handling, cursor replay, wide characters, line limits, expansion, and assistive text remain unchanged. A settled foreground standard shell card's Copy control writes the authored command rather than its output; a `terminal_send` card keeps copying its output.
 
 ### Diff card
 

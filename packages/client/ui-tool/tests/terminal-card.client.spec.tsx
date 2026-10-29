@@ -119,7 +119,7 @@ describe('terminalCardModel', () => {
       copy: { kind: 'shell', command: 'ls -la', description: 'List files' },
       card: {
         cwd: '/projects/app', output: 'boom',
-        exitCode: 2, signal: undefined, running: false,
+        exitCode: 2, signal: undefined, running: false, copyText: 'ls -la',
       },
     })
     expect(terminalCardModel(settled({
@@ -672,7 +672,7 @@ describe('BashRow terminal card', () => {
     expect(view.container.querySelector(`[data-state="${interrupted ? 'stopped' : 'error'}"]`)).not.toBeNull()
   })
 
-  it.each(['BashRow', 'GenericToolCard'] as const)('%s preserves authored command lines and copies only raw output', async (renderer) => {
+  it.each(['BashRow', 'GenericToolCard'] as const)('%s preserves authored command lines and copies the command', async (renderer) => {
     const clipboard = Object.getOwnPropertyDescriptor(navigator, 'clipboard')
     const writeText = vi.fn<Clipboard['writeText']>().mockResolvedValue(undefined)
     const lines = [`  node worker.mjs --trace=${'command-token-'.repeat(24)}  `, '', '\tprintf "done"']
@@ -692,7 +692,7 @@ describe('BashRow terminal card', () => {
       expect(view.getByText('last ', RAW)).toBeTruthy()
       await act(async () => { fireEvent.click(view.getByRole('button', { name: '复制' })) })
       expect(writeText).toHaveBeenCalledOnce()
-      expect(writeText).toHaveBeenCalledWith(output)
+      expect(writeText).toHaveBeenCalledWith(command)
       await act(async () => { await vi.runOnlyPendingTimersAsync() })
     } finally {
       cleanup()

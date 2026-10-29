@@ -99,6 +99,12 @@ describe.skipIf(MODE === 'record' || !HAS_PWSH)('web e2e: pwsh calls use the bas
       .split(scaffold.workspaceCwd.split(/[\\/]/).pop()!).join('{{workspace}}')
       .split(SEED_ID).join('{{seededId}}')
     await compareOrRefreshGolden(TERMINAL_EXPECTED, snapshot, MODE)
+    // The card's copy control writes the authored command, not the result.
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write'])
+    await card.locator('[class*="_copyButton_"]').first().click()
+    await expect.poll(() => card.locator('[class*="_copyButton_"]').first().textContent(), { timeout: 5_000 })
+      .toBe('Copied')
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('Get-Item missing.txt')
   }, 60_000)
 
   it('guards the lane fixture inventory', async () => {

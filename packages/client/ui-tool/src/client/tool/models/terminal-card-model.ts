@@ -44,7 +44,7 @@ export interface TerminalCardModel {
    * The locale-neutral props {@link TerminalBlock} draws. The render site adds
    * `command` after resolving {@link copy} through its locale seat.
    */
-  card: Pick<TerminalBlockProps, 'cwd' | 'output' | 'exitCode' | 'signal' | 'running' | 'background'>
+  card: Pick<TerminalBlockProps, 'cwd' | 'output' | 'exitCode' | 'signal' | 'running' | 'background' | 'copyText'>
   /**
    * Verbatim Tool data or semantic `terminal_send` data. Product copy stays
    * unresolved until a render site supplies its locale seat.
@@ -55,7 +55,7 @@ export interface TerminalCardModel {
 }
 
 interface LocalizedTerminalCardModel {
-  readonly card: Pick<TerminalBlockProps, 'command' | 'cwd' | 'output' | 'exitCode' | 'signal' | 'running' | 'background'>
+  readonly card: Pick<TerminalBlockProps, 'command' | 'cwd' | 'output' | 'exitCode' | 'signal' | 'running' | 'background' | 'copyText'>
   readonly description: string | undefined
 }
 
@@ -355,6 +355,9 @@ export function terminalCardModel(
       exitCode: status.exitCode,
       signal: status.signal,
       running: false,
+      // A shell card's control copies the authored command: the header is the
+      // control's own line, and a command may be all the reader wants to reuse.
+      ...(call.kind === 'shell' ? { copyText: call.command } : {}),
     },
   }
 }

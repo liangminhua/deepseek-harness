@@ -619,13 +619,13 @@ describe('web e2e: navigation & panes over a rich seeded session', () => {
     const snapshot = (await captureStableAria(page, '[data-terminal]', scaffold.workspaceCwd))
       .split(SEED_ID).join('{{seededId}}')
     await compareOrRefreshGolden(TERMINAL_EXPECTED, snapshot, MODE)
-    // Copy writes the raw output through the browser's own clipboard, which in
-    // a real page is the async Clipboard API rather than the jsdom fallback.
+    // Copy writes the authored command through the browser's own clipboard,
+    // which in a real page is the async Clipboard API rather than the jsdom fallback.
     await page.context().grantPermissions(['clipboard-read', 'clipboard-write'])
     await card.locator('[class*="_copyButton_"]').first().click()
     await expect.poll(() => card.locator('[class*="_copyButton_"]').first().textContent(), { timeout: 5_000 })
       .toBe('Copied')
-    expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('NAVIGATION_OK')
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('echo NAVIGATION_OK')
   }, 60_000)
 
   it.skipIf(MODE === 'record')('keeps the recorded fixture inventory exact', async () => {

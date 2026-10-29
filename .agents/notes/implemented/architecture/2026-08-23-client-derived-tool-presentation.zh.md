@@ -302,7 +302,7 @@ Client terminal model 从工具名称、调用参数、结果 content、error �
 | 输入 | 保持的结果 |
 |---|---|
 | 标准 `bash`／`pwsh` 前台 running | terminal prompt、description、cwd、running 状态 |
-| 标准前台 success | terminal output、exit code/signal 与结算状态呈现 |
+| 标准前台 success | terminal output、exit code/signal、结算状态呈现，以及写入作者编写命令的复制控件 |
 | 标准 `bash`／`pwsh` 主动后台调用 | Start 使用原 `background` 标志和调用 `running`；回执清除 `running` 后保留静态命令，不显示输出或任务状态 |
 | 工具执行 error | Generic IN／OUT 与错误摘要 |
 | persistent `bash`／`pwsh` running | terminal prompt |
@@ -319,7 +319,7 @@ Client terminal model 从工具名称、调用参数、结果 content、error �
 
 同名普通与 persistent provider 是特殊兼容点。Client 使用当前有效参数与结果特征保留已交付差异；不足以无歧义识别的输入选择 Generic settled 结果，不增加新表现。
 
-除主动后台的仅命令展示外，TerminalBlock 的 ANSI、光标重放、宽字符、行数上限、展开、复制与辅助技术文本保持不变。
+除主动后台的仅命令展示外，TerminalBlock 的 ANSI、光标重放、宽字符、行数上限、展开与辅助技术文本保持不变。已完成的前台标准 shell 卡片，其复制控件写入作者编写的命令，而不是输出；`terminal_send` 卡片仍复制其输出。
 
 ### Diff 卡片
 
